@@ -1,0 +1,38 @@
+- name: Build
+  type: serial
+  steps:
+    - name: Run tests
+      service: compiler
+      command: make test
+    - name: Build artifact
+      service: compiler
+      command: make build/linux OUTPUT_DIR=/build
+    - name: Build app
+      service: app
+      command: /kit-overwatch --version
+
+- name: Registry
+  type: serial
+  service: app
+  encrypted_dockercfg_path: codeship-dockercfg.encrypted
+  steps:
+    - name: Push Branch-CommitID tag
+      type: push
+      registry: quay.io
+      image_name: quay.io/invision/kit-overwatch
+      image_tag: "{{ .Branch }}-{{ .CommitID }}"
+    - name: Push Branch tag
+      type: push
+      registry: quay.io
+      image_name: quay.io/invision/kit-overwatch
+      image_tag: "{{ .Branch }}"
+    - name: Push master-CommitID tag # Used for Staging deploys
+      type: push
+      registry: quay.io
+      image_name: quay.io/invision/kit-overwatch
+      image_tag: "master-{{ .CommitID }}"
+    - name: Push release-CommitID tag # Used for Prod deploys
+      type: push
+      registry: quay.io
+      image_name: quay.io/invision/kit-overwatch
+      image_tag: "release-{{ .CommitID }}"

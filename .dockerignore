@@ -1,0 +1,7 @@
+compiled
+.dockerignore
+codeship*
+*.env
+.gitignore
+README.md
+LICENSE

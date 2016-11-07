@@ -1,0 +1,11 @@
+compiler:
+  build:
+    image: quay.io/invision/kit-overwatch-compiler
+    dockerfile_path: Dockerfile
+  volumes:
+    - build:/build
+app:
+  build:
+    image: quay.io/invision/kit-overwatch
+    path: build
+    dockerfile_path: Dockerfile
