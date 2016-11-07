@@ -36,3 +36,9 @@
       registry: quay.io
       image_name: quay.io/invision/kit-overwatch
       image_tag: "release-{{ .CommitID }}"
+    - name: Push latest tag # Latest tag for master branch
+      tag: master
+      type: push
+      registry: quay.io
+      image_name: quay.io/invision/kit-overwatch
+      image_tag: "latest"
