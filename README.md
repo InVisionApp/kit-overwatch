@@ -1,8 +1,12 @@
+<p align="center">
+  <a href="https://invisionapp.github.io/kit/">
+    <img src="https://github.com/InVisionApp/kit/raw/master/media/kit-logo-horz-sm.png">
+  </a>
+</p>
+
 # kit-overwatch
 
-[![Team](https://img.shields.io/badge/team-genesis-lightgrey.svg)](https://github.com/orgs/InVisionApp/teams/genesis-team)
-![Status](https://img.shields.io/badge/status-live-green.svg)
-[![Slack](https://img.shields.io/badge/slack-%23kubernetes--events-blue.svg)](https://invisionapp.slack.com/messages/kubernetes-events/)
+[![Docker Repository on Quay](https://quay.io/repository/invision/kit-overwatch/status "Docker Repository on Quay")](https://quay.io/repository/invision/kit-overwatch)
 [ ![Codeship Status for InVisionApp/kit-overwatch](https://codeship.com/projects/1232c860-4089-0134-3306-1a3f66148744/status?branch=develop)](https://codeship.com/projects/167729)
 
 Monitors events within a Kubernetes cluster and sends notifications to Slack. You can adjust the events you want to be notified about and it can automatically handle @mentions based on Kubernetes labels.
