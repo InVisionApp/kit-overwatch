@@ -27,7 +27,7 @@ fmt: ## Run go fmt for all files in the project (excluding vendor)
 test: test/fmt test/unit test/integration test/race ## Perform both unit and integration tests
 
 test/fmt: ## Check if all files (excluding vendor) conform to fmt
-	test -z $(shell echo $(shell go fmt -n $(shell go list ./... | grep -v /vendor/)) | tr -d "[:space:]")
+	test -z $(shell echo $(shell go fmt $(shell go list ./... | grep -v /vendor/)) | tr -d "[:space:]")
 
 test/unit: ## Perform unit tests
 	go test -v -cover -tags unit $(TEST_UNIT_PACKAGES)
