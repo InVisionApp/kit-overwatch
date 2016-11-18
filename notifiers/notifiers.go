@@ -4,6 +4,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/InVisionApp/kit-overwatch/config"
+	notifyDataDog "github.com/InVisionApp/kit-overwatch/notifiers/datadog"
 	"github.com/InVisionApp/kit-overwatch/notifiers/deps"
 	notifyLog "github.com/InVisionApp/kit-overwatch/notifiers/log"
 	notifySlack "github.com/InVisionApp/kit-overwatch/notifiers/slack"
@@ -56,6 +57,14 @@ func (notifiers *Notifiers) SendAll(n *deps.Notification) {
 				log.Fatalf("NotifySlack Error: %v", err.Error())
 			}
 		}
+		if notifiers.Config.NotifyDataDog {
+			ndd := notifyDataDog.New(notifiers.Config.NotifyDataDogApiKey, notifiers.Config.NotifyDataDogAppKey)
+			err := ndd.Send(n)
+			if err != nil {
+				log.Fatalf("NotifyDataDog Error: %v", err.Error())
+			}
+		}
+
 	} else {
 		log.Debugf("Skipping because %s is not within NotificationLevel: %s / %s / %s / %s", n.Level, n.Cluster, n.Event.Reason, n.Event.Message, n.Event.LastTimestamp)
 	}
