@@ -4,6 +4,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/InVisionApp/kit-overwatch/config"
+	dependencies "github.com/InVisionApp/kit-overwatch/deps"
 	notifyDataDog "github.com/InVisionApp/kit-overwatch/notifiers/datadog"
 	"github.com/InVisionApp/kit-overwatch/notifiers/deps"
 	notifyLog "github.com/InVisionApp/kit-overwatch/notifiers/log"
@@ -11,12 +12,14 @@ import (
 )
 
 type Notifiers struct {
-	Config config.Config
+	Config       config.Config
+	Dependencies *dependencies.Dependencies
 }
 
-func New(cfg *config.Config) *Notifiers {
+func New(cfg *config.Config, d *dependencies.Dependencies) *Notifiers {
 	return &Notifiers{
-		Config: *cfg,
+		Config:       *cfg,
+		Dependencies: d,
 	}
 }
 
@@ -58,7 +61,7 @@ func (notifiers *Notifiers) SendAll(n *deps.Notification) {
 			}
 		}
 		if notifiers.Config.NotifyDataDog {
-			ndd := notifyDataDog.New(notifiers.Config.NotifyDataDogApiKey, notifiers.Config.NotifyDataDogAppKey)
+			ndd := notifyDataDog.New(notifiers.Dependencies.DDClient)
 			err := ndd.Send(n)
 			if err != nil {
 				log.Fatalf("NotifyDataDog Error: %v", err.Error())

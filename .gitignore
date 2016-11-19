@@ -30,3 +30,4 @@ codeship.aes
 *dockercfg
 tmp
 .idea/
+.env.local

@@ -10,12 +10,6 @@
 			"revisionTime": "2016-08-17T20:01:17Z"
 		},
 		{
-			"checksumSHA1": "tgXz+Jg23X+Hqq5T2uibBSMjJ60=",
-			"path": "github.com/InVisionApp/go-datadog-api",
-			"revision": "7129cc0192308bf16f78475400875c40902623d9",
-			"revisionTime": "2016-11-14T05:22:44Z"
-		},
-		{
 			"checksumSHA1": "htjvdG/znrHmFYRQBqA2vHrJsF4=",
 			"path": "github.com/Sirupsen/logrus",
 			"revision": "cd7d1bbe41066b6c1f19780f895901052150a575",
@@ -488,6 +482,12 @@
 			"path": "github.com/ugorji/go/codec",
 			"revision": "7b762fb34b97cd5cab42871bc76e645540762a36",
 			"revisionTime": "2016-08-17T20:01:17Z"
+		},
+		{
+			"checksumSHA1": "S0rZrw+WuE4lzcFRmNDNLE0jRYU=",
+			"path": "github.com/zorkian/go-datadog-api",
+			"revision": "01be5a9050875ea386bda8e8ca510ae4a324f0a7",
+			"revisionTime": "2016-11-14T23:57:36Z"
 		},
 		{
 			"checksumSHA1": "jmDEnHmGflXf/8uGh9ph9DE+48Y=",

@@ -41,6 +41,10 @@ build/linux: clean/linux ## Build for linux (save to OUTPUT_DIR/BIN)
 build/darwin: clean/darwin ## Build for darwin (save to OUTPUT_DIR/BIN)
 	GOOS=darwin go build -a -installsuffix cgo -ldflags "-X main.version=$(RELEASE_VER)" -o $(OUTPUT_DIR)/$(BIN)-darwin .
 
+generate: ## Run generate for non-vendor packages only
+	go list ./... | grep -v vendor | xargs go generate
+	go fmt ./fakes/...
+
 docker: build/linux ## Build local docker image
 	docker build -t $(BIN):$(RELEASE_VER) .
 
