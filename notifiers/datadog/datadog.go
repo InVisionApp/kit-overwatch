@@ -8,6 +8,7 @@ import (
 	"github.com/InVisionApp/go-datadog-api"
 	"github.com/InVisionApp/kit-overwatch/notifiers/deps"
 	log "github.com/Sirupsen/logrus"
+	"strings"
 )
 
 const EVENT_TYPE = "kubernetes"
@@ -34,17 +35,33 @@ func (ndd *NotifyDataDog) Send(n *deps.Notification) error {
 
 	switch n.Level {
 	case "INFO":
-		event.AlertType = "info"
+		event.AlertType = "Info"
 		event.Priority = "low"
 	case "WARN":
-		event.AlertType = "warning"
-		event.Priority = "normal"
+		event.AlertType = "Warning"
+		event.Priority = "high"
 	case "ERROR":
-		event.AlertType = "error"
-		event.Priority = "normal"
+		event.AlertType = "Error"
+		event.Priority = "high"
 	}
 
-	title := fmt.Sprintf("`%s` event for `%s` on `%s`", n.Event.Reason, n.Event.ObjectMeta.Name, n.Cluster)
+	serviceName := n.Event.ObjectMeta.Name
+	splitName := strings.Split(n.Event.ObjectMeta.Name, "-")
+
+	switch n.Event.InvolvedObject.Kind {
+	case "Pod":
+		// Default Rules to ignore `service-name-[deploynumber-podnumber.number]`
+		indexToIgnore := 2
+
+		if len(splitName) > 3 && splitName[len(splitName)-3] == "deployment" {
+			// Rules to ignore `service-name-[deployment-deploynumber-podnumber.number]`
+			indexToIgnore = 3
+		}
+		serviceName = strings.Join(splitName[:len(splitName)-indexToIgnore], "-")
+
+	}
+
+	title := fmt.Sprintf("`%s` event for `%s` on `%s`", n.Event.Reason, serviceName, n.Cluster)
 	if n.Mention != "" {
 		title = fmt.Sprintf("Alerting [%s] concerning %s", n.Mention, title)
 	}
@@ -61,17 +78,17 @@ func (ndd *NotifyDataDog) Send(n *deps.Notification) error {
 		"namespace:" + n.Event.ObjectMeta.Namespace,
 		"component:" + n.Event.Source.Component,
 		"count:" + fmt.Sprintf("%d", n.Event.Count),
-		"involved-object-kind:" + n.Event.InvolvedObject.Kind,
-		"involved-object-name:" + n.Event.InvolvedObject.Name,
+		"object-kind:" + n.Event.InvolvedObject.Kind,
+		"object-name:" + n.Event.InvolvedObject.Name,
 		"mentioned:" + n.Mention,
+		"service:" + serviceName,
 	}
 
-	message := `	%v
-### Message Details
+	message := `#### Message Details
 	%v
-### Event Details
+#### Event Details
 	%v
-### Involved Object
+#### Involved Object
 	%v
 `
 
@@ -96,22 +113,25 @@ func (ndd *NotifyDataDog) Send(n *deps.Notification) error {
 		Name: n.Event.InvolvedObject.Name,
 	}
 
-	mDetailsJson, err := json.MarshalIndent(mDetails, "", "  ")
+	mDetailsJson, err := json.Marshal(mDetails)
 	if err != nil {
 		return fmt.Errorf("%s\n", err)
 	}
+	mDetailsFmt := string(mDetailsJson)
 
-	eDetailsJson, err := json.MarshalIndent(eDetails, "", "  ")
+	eDetailsJson, err := json.Marshal(eDetails)
 	if err != nil {
 		return fmt.Errorf("%s\n", err)
 	}
+	eDetailsFmt := string(eDetailsJson)
 
-	iObjectJson, err := json.MarshalIndent(iObject, "", "  ")
+	iObjectJson, err := json.Marshal(iObject)
 	if err != nil {
 		return fmt.Errorf("%s\n", err)
 	}
+	iObjectFmt := string(iObjectJson)
 
-	event.Text = MD_PREFIX + fmt.Sprintf(message, title, mDetailsJson, eDetailsJson, iObjectJson) + MD_SUFFIX
+	event.Text = MD_PREFIX + fmt.Sprintf(message, mDetailsFmt, eDetailsFmt, iObjectFmt) + MD_SUFFIX
 
 	newEvent, err := ndd.Client.PostEvent(event)
 	if err != nil {
