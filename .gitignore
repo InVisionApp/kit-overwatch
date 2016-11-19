@@ -31,3 +31,4 @@ codeship.aes
 tmp
 .idea/
 .env.local
+build/
