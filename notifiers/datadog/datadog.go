@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"strings"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 
 	dependencies "github.com/InVisionApp/kit-overwatch/deps"
 	"github.com/InVisionApp/kit-overwatch/notifiers/deps"
@@ -55,11 +56,11 @@ func (ndd *NotifyDataDog) Send(n *deps.Notification) error {
 
 	switch n.Event.InvolvedObject.Kind {
 	case "Pod":
-		// Default Rules to ignore `service-name-[deploynumber-podnumber.number]`
+		// Default Rules to ignore `service-name-[replicaset-podnumber.number]`
 		indexToIgnore := 2
 
 		if len(splitName) > 3 && splitName[len(splitName)-3] == "deployment" {
-			// Rules to ignore `service-name-[deployment-deploynumber-podnumber.number]`
+			// Rules to ignore `service-name-[deployment-replicaset-podnumber.number]`
 			indexToIgnore = 3
 		}
 
