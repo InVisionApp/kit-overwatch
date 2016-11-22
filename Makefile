@@ -24,7 +24,7 @@ all: test build docker ## Test, build and docker image build
 fmt: ## Run go fmt for all files in the project (excluding vendor)
 	go fmt $(shell go list ./... | grep -v /vendor/)
 
-test: test/fmt test/unit test/integration ## Perform both unit and integration tests
+test: test/fmt test/unit test/integration ## Perform all tests
 
 test/fmt: ## Check if all files (excluding vendor) conform to fmt
 	test -z $(shell echo $(shell go fmt $(shell go list ./... | grep -v /vendor/)) | tr -d "[:space:]")
