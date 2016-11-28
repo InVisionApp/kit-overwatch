@@ -18,19 +18,19 @@ import (
 )
 
 type Watcher struct {
-	Client client.Client
+	Client       client.Client
 	ClientConfig restclient.Config
-	Config config.Config
+	Config       config.Config
 }
 
 type WatcherEvent struct {
-	Event   api.Event
+	Event      api.Event
 	WatchEvent watch.Event
 }
 
 type SentEvent struct {
 	LastSent time.Time
-	Count int
+	Count    int
 }
 
 func New(cfg *config.Config) *Watcher {
@@ -59,9 +59,9 @@ func New(cfg *config.Config) *Watcher {
 	}
 
 	return &Watcher{
-		Client: *c,
+		Client:       *c,
 		ClientConfig: *clientConfig,
-		Config: *cfg,
+		Config:       *cfg,
 	}
 }
 
@@ -106,8 +106,8 @@ func (w *Watcher) Watch() {
 
 			// Remember this event so we don't send duplicate notifications
 			pastEvents[e.ObjectMeta.UID] = WatcherEvent{
-				Event: e,
-				WatchEvent:   we,
+				Event:      e,
+				WatchEvent: we,
 			}
 
 			// Only log events that have happened since the service started
@@ -131,7 +131,7 @@ func (w *Watcher) Watch() {
 			}
 			sentEvents[e.ObjectMeta.UID] = SentEvent{
 				LastSent: time.Now(),
-				Count: count,
+				Count:    count,
 			}
 
 			// Generate and send the notification
@@ -144,40 +144,40 @@ func (w *Watcher) Watch() {
 
 func (w *Watcher) getLevel(e api.Event) string {
 	reasonLevels := map[string]string{
-		"SuccessfulCreate": "INFO",
-		"SuccessfulDelete": "INFO",
-		"ContainerCreating": "INFO",
-		"Pulled": "INFO",
-		"Pulling": "INFO",
-		"Created": "INFO",
-		"Starting": "INFO",
-		"Started": "INFO",
-		"Killing": "INFO",
-		"NodeReady": "INFO",
-		"ScalingReplicaSet": "INFO",
-		"Scheduled": "INFO",
-		"NodeNotReady": "WARN",
-		"MAPPING": "WARN",
-		"UPDATE": "INFO",
-		"DELETE": "INFO",
-		"NodeOutOfDisk": "ERROR",
-		"BackOff": "ERROR",
-		"ImagePullBackOff": "ERROR",
-		"FailedSync": "ERROR",
-		"FreeDiskSpaceFailed": "WARN",
-		"MissingClusterDNS": "ERROR",
-		"RegisteredNode": "INFO",
-		"TerminatingEvictedPod": "WARN",
-		"RemovingNode": "WARN",
-		"TerminatedAllPods": "WARN",
-		"CreatedLoadBalancer": "INFO",
-		"CreatingLoadBalancer": "INFO",
-		"NodeHasSufficientDisk": "INFO",
+		"SuccessfulCreate":        "INFO",
+		"SuccessfulDelete":        "INFO",
+		"ContainerCreating":       "INFO",
+		"Pulled":                  "INFO",
+		"Pulling":                 "INFO",
+		"Created":                 "INFO",
+		"Starting":                "INFO",
+		"Started":                 "INFO",
+		"Killing":                 "INFO",
+		"NodeReady":               "INFO",
+		"ScalingReplicaSet":       "INFO",
+		"Scheduled":               "INFO",
+		"NodeNotReady":            "WARN",
+		"MAPPING":                 "WARN",
+		"UPDATE":                  "INFO",
+		"DELETE":                  "INFO",
+		"NodeOutOfDisk":           "ERROR",
+		"BackOff":                 "ERROR",
+		"ImagePullBackOff":        "ERROR",
+		"FailedSync":              "ERROR",
+		"FreeDiskSpaceFailed":     "WARN",
+		"MissingClusterDNS":       "ERROR",
+		"RegisteredNode":          "INFO",
+		"TerminatingEvictedPod":   "WARN",
+		"RemovingNode":            "WARN",
+		"TerminatedAllPods":       "WARN",
+		"CreatedLoadBalancer":     "INFO",
+		"CreatingLoadBalancer":    "INFO",
+		"NodeHasSufficientDisk":   "INFO",
 		"NodeHasSufficientMemory": "INFO",
-		"NodeNotSchedulable": "ERROR",
-		"DeletingAllPods": "WARN",
-		"DeletingNode": "WARN",
-		"UpdatedLoadBalancer": "INFO",
+		"NodeNotSchedulable":      "ERROR",
+		"DeletingAllPods":         "WARN",
+		"DeletingNode":            "WARN",
+		"UpdatedLoadBalancer":     "INFO",
 	}
 
 	var ok bool

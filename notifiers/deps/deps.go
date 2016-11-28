@@ -5,8 +5,8 @@ import (
 )
 
 type Notification struct {
-	Cluster  string
-	Event    api.Event
-	Level    string
-	Mention  string
+	Cluster string
+	Event   api.Event
+	Level   string
+	Mention string
 }

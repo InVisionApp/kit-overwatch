@@ -1,4 +1,4 @@
-compiler:
+dev:
   build:
     image: quay.io/invision/kit-overwatch-compiler
     dockerfile_path: Dockerfile
