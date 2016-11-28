@@ -13,6 +13,7 @@ import (
 	"k8s.io/kubernetes/pkg/watch"
 
 	"github.com/InVisionApp/kit-overwatch/config"
+	dependencies "github.com/InVisionApp/kit-overwatch/deps"
 	"github.com/InVisionApp/kit-overwatch/notifiers"
 	"github.com/InVisionApp/kit-overwatch/notifiers/deps"
 )
@@ -21,6 +22,7 @@ type Watcher struct {
 	Client       client.Client
 	ClientConfig restclient.Config
 	Config       config.Config
+	Dependencies *dependencies.Dependencies
 }
 
 type WatcherEvent struct {
@@ -33,7 +35,7 @@ type SentEvent struct {
 	Count    int
 }
 
-func New(cfg *config.Config) *Watcher {
+func New(cfg *config.Config, d *dependencies.Dependencies) *Watcher {
 	var c *client.Client
 	var cErr error
 	var clientConfig *restclient.Config
@@ -62,6 +64,7 @@ func New(cfg *config.Config) *Watcher {
 		Client:       *c,
 		ClientConfig: *clientConfig,
 		Config:       *cfg,
+		Dependencies: d,
 	}
 }
 
@@ -241,7 +244,7 @@ func (w *Watcher) notify(e api.Event) {
 	}
 
 	// Send notifications
-	n := notifiers.New(&w.Config)
+	n := notifiers.New(&w.Config, w.Dependencies)
 	notification := deps.Notification{
 		Cluster: w.Config.ClusterName,
 		Event:   e,
