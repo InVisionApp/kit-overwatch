@@ -20,9 +20,14 @@ run: ## Run via godep (without building)
 	go run *.go
 
 all: test build docker ## Test, build and docker image build
+	
+fmt: ## Run go fmt for all files in the project (excluding vendor)
+	go fmt $(shell go list ./... | grep -v /vendor/)
 
-test: ## Perform both unit and integration tests
-	go test -v -cover -tags "unit integration" $(TEST_PACKAGES)
+test: test/fmt test/unit test/integration ## Perform all tests
+
+test/fmt: ## Check if all files (excluding vendor) conform to fmt
+	test -z $(shell echo $(shell go fmt $(shell go list ./... | grep -v /vendor/)) | tr -d "[:space:]")
 
 test/unit: ## Perform unit tests
 	go test -v -cover -tags unit $(TEST_UNIT_PACKAGES)

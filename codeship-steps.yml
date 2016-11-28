@@ -1,11 +1,21 @@
+- name: Test
+  type: parallel
+  steps:
+    - name: Run fmt
+      service: dev
+      command: make test/fmt
+    - name: Run unit
+      service: dev
+      command: make test/unit
+    - name: Run integration
+      service: dev
+      command: make test/integration
+
 - name: Build
   type: serial
   steps:
-    - name: Run tests
-      service: compiler
-      command: make test
     - name: Build artifact
-      service: compiler
+      service: dev
       command: make build/linux OUTPUT_DIR=/build
     - name: Build app
       service: app
