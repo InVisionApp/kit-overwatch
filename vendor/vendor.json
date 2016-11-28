@@ -490,6 +490,12 @@
 			"revisionTime": "2016-08-17T20:01:17Z"
 		},
 		{
+			"checksumSHA1": "S0rZrw+WuE4lzcFRmNDNLE0jRYU=",
+			"path": "github.com/zorkian/go-datadog-api",
+			"revision": "01be5a9050875ea386bda8e8ca510ae4a324f0a7",
+			"revisionTime": "2016-11-14T23:57:36Z"
+		},
+		{
 			"checksumSHA1": "jmDEnHmGflXf/8uGh9ph9DE+48Y=",
 			"origin": "k8s.io/kubernetes/vendor/golang.org/x/net/context",
 			"path": "golang.org/x/net/context",

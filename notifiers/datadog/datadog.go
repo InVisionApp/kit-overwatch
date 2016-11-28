@@ -18,11 +18,11 @@ const MD_PREFIX = "%%% \n"
 const MD_SUFFIX = "\n %%%"
 
 type NotifyDataDog struct {
-	Client *datadog.Client
+	Client dependencies.IDataDogClient
 }
 
-func New(apiKey string, appKey string) *NotifyDataDog {
-	client := datadog.NewClient(apiKey, appKey)
+func New(client dependencies.IDataDogClient) *NotifyDataDog {
+
 	return &NotifyDataDog{
 		Client: client,
 	}
@@ -30,6 +30,9 @@ func New(apiKey string, appKey string) *NotifyDataDog {
 
 func (ndd *NotifyDataDog) Send(n *deps.Notification) error {
 
+	if n == nil {
+		return fmt.Errorf("Notification cannot be nil")
+	}
 	event := &datadog.Event{
 		SourceType: EVENT_TYPE,
 		EventType:  EVENT_TYPE,
@@ -59,13 +62,15 @@ func (ndd *NotifyDataDog) Send(n *deps.Notification) error {
 			// Rules to ignore `service-name-[deployment-replicaset-podnumber.number]`
 			indexToIgnore = 3
 		}
-		serviceName = strings.Join(splitName[:len(splitName)-indexToIgnore], "-")
 
+		if len(splitName) > 2 {
+			serviceName = strings.Join(splitName[:len(splitName)-indexToIgnore], "-")
+		}
 	}
 
 	title := fmt.Sprintf("`%s` event for `%s` on `%s`", n.Event.Reason, serviceName, n.Cluster)
 	if n.Mention != "" {
-		title = fmt.Sprintf("Alerting [%s] concerning %s", n.Mention, title)
+		title = fmt.Sprintf("k8s Event for [%s] concerning %s", n.Mention, title)
 	}
 
 	event.Title = title
@@ -95,6 +100,7 @@ func (ndd *NotifyDataDog) Send(n *deps.Notification) error {
 `
 
 	mDetails := &messageDetails{
+		Message: n.Event.Message,
 		Cluster: n.Cluster,
 		Reason:  n.Event.Reason,
 		Type:    n.Event.Type,
@@ -140,11 +146,12 @@ func (ndd *NotifyDataDog) Send(n *deps.Notification) error {
 		return fmt.Errorf("Post Event error: %s\n", err)
 	}
 
-	log.Infof("NotifyDataDog: %s / %s / %s / %s", n.Event.Reason, n.Event.Message, newEvent.Id, newEvent.Title)
+	log.Infof("NotifyDataDog: %s / %s / %d / %s", n.Event.Reason, n.Event.Message, newEvent.Id, newEvent.Title)
 	return nil
 }
 
 type messageDetails struct {
+	Message string `json:"message,omitempty"`
 	Cluster string `json:"cluster,omitempty"`
 	Reason  string `json:"reason,omitempty"`
 	Type    string `json:"type,omitempty"`
