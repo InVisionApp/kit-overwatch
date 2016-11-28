@@ -6,6 +6,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/cactus/go-statsd-client/statsd"
 	"github.com/joho/godotenv"
+	"github.com/zorkian/go-datadog-api"
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/InVisionApp/kit-overwatch/api"
@@ -62,8 +63,14 @@ func main() {
 		StatsD: statsdClient,
 	}
 
+	// Add datadog if enabled
+	if cfg.NotifyDataDog {
+		ddClient := datadog.NewClient(cfg.NotifyDataDogApiKey, cfg.NotifyDataDogApiKey)
+		d.DDClient = ddClient
+	}
+
 	// Start the watcher
-	w := watcher.New(cfg)
+	w := watcher.New(cfg, d)
 	go w.Watch()
 
 	// Start the API server

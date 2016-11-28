@@ -8,5 +8,6 @@ import (
 )
 
 type Dependencies struct {
-	StatsD statsd.Statter
+	StatsD   statsd.Statter
+	DDClient IDataDogClient
 }

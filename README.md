@@ -60,6 +60,10 @@ The following environment variables are used by this service.
 | `KIT_OVERWATCH_NOTIFY_SLACK_TOKEN` | The auth token for Slack. Required if KIT_OVERWATCH_NOTIFY_SLACK=true | false | *empty* |
 | `KIT_OVERWATCH_NOTIFY_SLACK_AS_USER` | Enable to send a notification to slack as the given user associated with the token | true | `false` |
 | `KIT_OVERWATCH_NOTIFY_SLACK_CHANNEL` | The Slack channel to post notifications to. Required if KIT_OVERWATCH_NOTIFY_SLACK=true | false | *empty* |
+| `KIT_OVERWATCH_NOTIFY_DATADOG` | Enable to send an event to DataDog | true | `false` |
+| `KIT_OVERWATCH_NOTIFY_DATADOG_APIKEY` | The apikey for DataDog. Required if KIT_OVERWATCH_NOTIFY_DATADOG=true | false | *empty* |
+| `KIT_OVERWATCH_NOTIFY_DATADOG_APPKEY` | The appkey for DataDog. Required if KIT_OVERWATCH_NOTIFY_DATADOG=true | false | *empty* |
+
 
 ## How to run locally
 
@@ -99,4 +103,10 @@ $ jet steps
 - [x] Get events from cluster
 - [x] Log events to stdout
 - [x] Add Slack notification of events
+- [x] Add DataDog notification of events
+- [ ] Add Unit Tests for Watcher
+- [ ] Add Unit Tests for Notifiers
+- [ ] Add Unit Tests for Slack Notifier
+- [ ] Add Unit Tests for Log Notifier
 - [ ] Use datastore so we can make this service stateless
+- [ ] Split watcher and notifiers to allow multiple instances using task queue
